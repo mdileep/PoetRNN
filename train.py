@@ -6,14 +6,8 @@ import json
 import rnn.preprocessing as prep
 import rnn.RNN as RNN 
 from rnn.rnn_classifier_trainer import *
-import cPickle as pickle
-
-
-
-
-
-
-
+import  pickle
+from rnn.preprocessing import *
 
 def main(params):
     #create vocab dictionary
@@ -23,7 +17,7 @@ def main(params):
     #load poems
     poems=[]
     labels=[]
-    with open(data_filename,'rb') as my_file:
+    with open(data_filename,'rt') as my_file:
         reader=csv.reader(my_file)
         for row in reader:
             poems.append(prep.poem_to_mat(row[0],poem_dict))
@@ -59,10 +53,10 @@ def main(params):
         model=pickle.load(open(params['init_model'],'rb'))
         if 'WLSTM' in model.keys():
             loss_function=RNN.LSTM_cost
-            print 'Loaded one layer LSTM model'
+            print( 'Loaded one layer LSTM model')
         elif 'WLSTM1' in model.keys():
             loss_function=RNN.two_layer_LSTM_cost
-            print 'Loaded two layer LSTM model'
+            print( 'Loaded two layer LSTM model')
         else:
             raise ValueError('model given is not one or two layer LSTM model')
     #train the model
@@ -100,8 +94,8 @@ if __name__ == "__main__":
     
     args=parser.parse_args()
     params=vars(args)
-    print 'parsed parameters:'
-    print json.dumps(params, indent = 2)
+    print('parsed parameters:')
+    print(json.dumps(params, indent = 2))
     main(params)
     
 

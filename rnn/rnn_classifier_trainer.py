@@ -1,10 +1,12 @@
 import numpy as np
-import preprocessing as prep
 import time
-import cPickle as pickle
+import pickle
 import os
+import csv
+from .preprocessing import *
 
-# this came from Fei-Fei Li and Andrej Karpathy's Convolutional Neural network class http://cs231n.stanford.edu with only minor modifications
+# this came from Fei-Fei Li and Andrej Karpathy's Convolutional Neural network
+# class http://cs231n.stanford.edu with only minor modifications
 class RNNClassifierTrainer(object):
   """ The trainer class performs SGD with momentum on a cost function """
   def __init__(self):
@@ -56,22 +58,22 @@ class RNNClassifierTrainer(object):
     - val_acc_history: List storing the validation set accuracy at each epoch.
     """
     #unpack the function arguments
-    drop_prob1=kwargs.get('drop_prob1',0.0)
-    drop_prob2=kwargs.get('drop_prob2',0.0)
-    checkpoint_output_dir=kwargs.get('checkpoint_output_dir','cv')
-    max_val=kwargs.get('max_val',-1)
-    fappend=kwargs.get('fappend')
-    iter_to_update=kwargs.get('iter_to_update',1)
+    drop_prob1 = kwargs.get('drop_prob1',0.0)
+    drop_prob2 = kwargs.get('drop_prob2',0.0)
+    checkpoint_output_dir = kwargs.get('checkpoint_output_dir','cv')
+    max_val = kwargs.get('max_val',-1)
+    fappend = kwargs.get('fappend')
+    iter_to_update = kwargs.get('iter_to_update',1)
     #unpack dictionary and strip it from the model
-    dictionary=model['dictionary']
-    model={k:v for k,v in model.iteritems() if k!='dictionary'}
+    dictionary = model['dictionary']
+    model = {k:v for k,v in model.items() if k != 'dictionary'}
     N = len(X)
     M = len(X_val_list)
-    batch_val=True
-    if max_val==-1:
-        batch_val=False
+    batch_val = True
+    if max_val == -1:
+        batch_val = False
     #batch the validation data and labels into tensors and create the mask
-    X_val,val_mask,val_chars,y_val=prep.poem_batch_to_tensor(X_val_list,y_val_list)
+    X_val,val_mask,val_chars,y_val = poem_batch_to_tensor(X_val_list,y_val_list)
     if sample_batches:
       iterations_per_epoch = N / batch_size # using SGD
     else:
@@ -83,16 +85,16 @@ class RNNClassifierTrainer(object):
     loss_history = []
     train_acc_history = []
     val_acc_history = []
-    time_list=[]
-    for it in xrange(num_iters):
-      t0=time.time()  
+    time_list = []
+    for it in range(int(num_iters)):
+      t0 = time.time()  
       if it % iter_to_update == 0:
-        print 'starting iteration ', it
-        if it>0:
-          avg_time=np.mean(np.array(time_list))
-          time_list=[]
-          print 'Average time per batch is %.3f seconds' % avg_time
-          print 'Current training loss is %.3f' % cost
+        print('starting iteration ', it)
+        if it > 0:
+          avg_time = np.mean(np.array(time_list))
+          time_list = []
+          print('Average time per batch is %.3f seconds' % avg_time)
+          print('Current training loss is %.3f' % cost)
 
       # get batch of data
       if sample_batches:
@@ -103,10 +105,10 @@ class RNNClassifierTrainer(object):
         # no SGD used, full gradient descent
         X_batch_list = X
         y_batch_list = y
-      X_batch,batch_mask,batch_num_chars,y_batch=prep.poem_batch_to_tensor(X_batch_list,y_batch_list)
+      X_batch,batch_mask,batch_num_chars,y_batch = poem_batch_to_tensor(X_batch_list,y_batch_list)
 
       # evaluate cost and gradient
-      #print 'computing loss'  
+      #print 'computing loss'
       cost, grads = loss_function(X_batch, y_batch,batch_mask, model,batch_num_chars, reg,drop_prob1=drop_prob1,drop_prob2=drop_prob2)
       loss_history.append(cost)
 
@@ -122,25 +124,25 @@ class RNNClassifierTrainer(object):
             self.step_cache[p] = np.zeros(grads[p].shape)
           
           self.step_cache[p]*=momentum
-          self.step_cache[p]+=-learning_rate*grads[p]  
-          dx=self.step_cache[p]
+          self.step_cache[p]+=-learning_rate * grads[p]  
+          dx = self.step_cache[p]
           #code for rmsprop update
         elif update == 'rmsprop':
           decay_rate = 0.95 # you could also make this an option
-          smoothing=1e-8  
+          smoothing = 1e-8  
           if not p in self.step_cache: 
             self.step_cache[p] = np.zeros(grads[p].shape)
          
           #####################################################################
-          self.step_cache[p]=decay_rate*self.step_cache[p]+(1-decay_rate)*grads[p]**2
-          dx=-learning_rate*grads[p]/np.sqrt(self.step_cache[p]+smoothing) 
+          self.step_cache[p] = decay_rate * self.step_cache[p] + (1 - decay_rate) * grads[p] ** 2
+          dx = -learning_rate * grads[p] / np.sqrt(self.step_cache[p] + smoothing) 
         else:
           raise ValueError('Unrecognized update type "%s"' % update)
 
         # update the parameters
         #print np.linalg.norm(dx)
         model[p] += dx
-        dt=time.time()-t0
+        dt = time.time() - t0
         time_list.append(dt)
         
 
@@ -151,7 +153,7 @@ class RNNClassifierTrainer(object):
       if first_it or epoch_end or acc_check:
         if it > 0 and epoch_end:
           # decay the learning rate once the epoch is more than decay_after
-          if epoch>decay_after-1:  
+          if epoch > decay_after - 1:  
             learning_rate *= learning_rate_decay
           epoch += 1
             
@@ -165,7 +167,7 @@ class RNNClassifierTrainer(object):
           X_train_subset_list = X
           y_train_subset_list = y
         #batch the masked data
-        X_train_mat,train_mask,train_num_chars,y_train_mat=prep.poem_batch_to_tensor(X_train_subset_list,y_train_subset_list)
+        X_train_mat,train_mask,train_num_chars,y_train_mat = poem_batch_to_tensor(X_train_subset_list,y_train_subset_list)
         scores_train = loss_function(X_train_mat, model=model,mask=train_mask,num_chars=train_num_chars)
         y_pred_train = np.argmax(scores_train, axis=-1)
         train_acc = np.mean(y_pred_train == y_train_mat)
@@ -173,51 +175,50 @@ class RNNClassifierTrainer(object):
 
         # evaluate val accuracy
         # use all validation data if not batching
-        if batch_val==False:
+        if batch_val == False:
           scores_val = loss_function(X_val, model=model,mask=val_mask,num_chars=val_chars)
           val_loss,_ = loss_function(X_val, y_val, model=model,mask=val_mask,num_chars=val_chars)
           y_pred_val = np.argmax(scores_val, axis=-1)
-          val_acc = np.mean(y_pred_val ==  y_val)
+          val_acc = np.mean(y_pred_val == y_val)
           val_acc_history.append(val_acc)
         #take a sample of the validation data if we are batching
         else:
-          val_mask=np.random.choice(M,max_val)
-          X_val_subset_list=X_val_list[val_mask]
-          y_val_subset_list=y_val_list[val_mask]
+          val_mask = np.random.choice(M,max_val)
+          X_val_subset_list = X_val_list[val_mask]
+          y_val_subset_list = y_val_list[val_mask]
           #batch the validation sample
-          X_val_mat,val_mask,val_num_chars,y_val_mat=prep.poem_batch_to_tensor(X_val_subset_list,y_val_subset_list)
-          scores_val=loss_function(X_val_mat,model=model,mask=val_mask,num_chars=val_num_chars)
-          val_loss,_=loss_function(X_val_mat,y_val_mat,model=model,mask=val_mask,num_chars=val_num_chars)
-          y_pred_val=np.argmax(scores_val,axis=-1)
-          val_acc=np.mean(y_pred_val==y_val_mat)
+          X_val_mat,val_mask,val_num_chars,y_val_mat = poem_batch_to_tensor(X_val_subset_list,y_val_subset_list)
+          scores_val = loss_function(X_val_mat,model=model,mask=val_mask,num_chars=val_num_chars)
+          val_loss,_ = loss_function(X_val_mat,y_val_mat,model=model,mask=val_mask,num_chars=val_num_chars)
+          y_pred_val = np.argmax(scores_val,axis=-1)
+          val_acc = np.mean(y_pred_val == y_val_mat)
           val_acc_history.append(val_acc)    
         
         # keep track of the best model based on validation accuracy
-        if val_loss < best_val_loss and epoch>0:
+        if val_loss < best_val_loss and epoch > 0:
           # make a copy of the model
           best_val_loss = val_loss
           best_model = {}
           #add the dictionary for when we sample
-          best_model['dictionary']=dictionary
+          best_model['dictionary'] = dictionary
           for p in model:
             best_model[p] = model[p].copy()
           #save the model if it is best
-          filename=os.path.join(checkpoint_output_dir,'checkpoint_%s_%.3f.p' % (fappend,val_loss))
-          print 'Saving epoch %s model to file' % epoch
+          filename = os.path.join(checkpoint_output_dir,'checkpoint_%s_%.3f.p' % (fappend,val_loss))
+          print ('Saving epoch %s model to file' % epoch)
           pickle.dump(best_model,open(filename,'wb'))    
 
         # print progress if needed
         if verbose:
-          print ('Finished epoch %d / %d: cost %f, train: %f, val %f, lr %e'
-                 % (epoch, num_epochs, cost, train_acc, val_acc, learning_rate))
+          print('Finished epoch %d / %d: cost %f, train: %f, val %f, lr %e' % (epoch, num_epochs, cost, train_acc, val_acc, learning_rate))
     
     # always save the final model
-    final_model=model.copy()
-    final_model['dictionary']=dictionary
-    filename=os.path.join(checkpoint_output_dir,'finalcheckpoint_%s_%.3f.p' % (fappend,val_loss))
+    final_model = model.copy()
+    final_model['dictionary'] = dictionary
+    filename = os.path.join(checkpoint_output_dir,'finalcheckpoint_%s_%.3f.p' % (fappend,val_loss))
     pickle.dump(final_model,open(filename,'wb'))             
     if verbose:
-      print 'finished optimization. best validation loss: %f' % (best_val_loss)
+      print('finished optimization. best validation loss: %f' % (best_val_loss))
     # return the best model and the training history statistics
     return best_model, loss_history, train_acc_history, val_acc_history
 

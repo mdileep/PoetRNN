@@ -1,13 +1,13 @@
 import numpy as np
 import csv
-
+import os
 
 #some lists that are useful later
 letter_distribution=np.array([.08167,.01492,.02782,.04253,.12702,.02228,.02015,.06094,.06966,.00153,.00772,.04025,.02406,.06749,.07507,.01929,.00095,.05987,.06327,.09056,.02758,.00978,.02361,.00150,.01974,.00074])
 letters=np.array(['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'])
 #generate letter to number dictionary
 def generate_dictionary(location):
-    with open(location,'rb') as my_file:
+    with open(os.path.abspath(location),'rt') as my_file:
         reader=csv.reader(my_file)
         char_to_nums={}
         char_to_nums['\t']=0 # we use this as a special character later
@@ -28,7 +28,7 @@ def poem_to_mat(poem,dictionary):
     vocab_length=len(dictionary)
     poem_mat=np.zeros((poem_length,vocab_length))
     vocab_list=[dictionary[s] for s in poem]
-    poem_mat[xrange(poem_length),vocab_list]=1
+    poem_mat[range(poem_length),vocab_list]=1
     return poem_mat
     
 #generate labels for poems

@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{1c85cac6-15bc-44e5-8b45-9b66449b7204}</ProjectGuid>
+    <ProjectHome />
+    <StartupFile>train.py </StartupFile>
+    <SearchPath />
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <ProjectTypeGuids>{888888a0-9f3d-457c-b088-3a5042f75d52}</ProjectTypeGuids>
+    <LaunchProvider>Standard Python launcher</LaunchProvider>
+    <InterpreterId>Global|PythonCore|3.6</InterpreterId>
+    <IsWindowsApplication>False</IsWindowsApplication>
+    <DebugStdLib>False</DebugStdLib>
+    <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
+    <CommandLineArguments>-d haikus.csv</CommandLineArguments>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
+  <PropertyGroup>
+    <VisualStudioVersion Condition=" '$(VisualStudioVersion)' == '' ">10.0</VisualStudioVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="limericks\limericks\items.py" />
+    <Compile Include="limericks\limericks\pipelines.py" />
+    <Compile Include="limericks\limericks\settings.py" />
+    <Compile Include="limericks\limericks\spiders\limericks2.py" />
+    <Compile Include="limericks\limericks\spiders\__init__.py" />
+    <Compile Include="limericks\limericks\__init__.py" />
+    <Compile Include="rnn\preprocessing.py" />
+    <Compile Include="rnn\RNN.py" />
+    <Compile Include="rnn\rnn_classifier_trainer.py" />
+    <Compile Include="rnn\__init__.py" />
+    <Compile Include="sample.py" />
+    <Compile Include="train.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="cv\" />
+    <Folder Include="data\" />
+    <Folder Include="limericks\" />
+    <Folder Include="limericks\limericks" />
+    <Folder Include="limericks\limericks\spiders" />
+    <Folder Include="poems\" />
+    <Folder Include="rnn" />
+  </ItemGroup>
+  <ItemGroup>
+    <InterpreterReference Include="Global|PythonCore|3.6" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="cv\.DS_Store" />
+    <Content Include="data\haikus.csv" />
+    <Content Include="data\limericks.csv" />
+    <Content Include="data\Readme.md" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
+</Project>

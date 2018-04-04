@@ -5,20 +5,20 @@ This project is a *Python* implementation of a LSTM recurrent neural network des
 One key difference between this implementation and Karpathy's [char-rnn](https://github.com/karpathy/char-rnn) is that the input is not treated as a long text file. This is important for learning poetry because there is clear structure to the data (i.e. each poem is a distinct piece of data) that is ignored if you just concatenate it all to a single text file. It also makes sampling nicer because you can tell the sampler that you want 14 poems instead of having to decide in advance that you want to sample 10000 characters and probably having the sample stop in the middle of a poem. 
 
 
-##Usage
+## Usage
 
-###Data
+### Data
 
 The input data should be stored in the `data` file and should consist of a `.csv` file in which each row has a single column consisting of a string containing a poem (or whatever data you want to learn from). I have included two files `haikus.csv` and `limericks.csv` which contain approximately 8000 and 90000 haikus and limericks, respectively. 
 
 Feel free to play around with your own data. It should work provided it is formatted as above. 
 
 
-###The Model
+### The Model
 
 The model for training is an LSTM recurrent neural network of either 1 or 2 hidden layers. The forward and backward passes are batched and the implementation is a (very slight) modification of [Andrej Karpathy's gist](https://gist.github.com/karpathy/587454dc0146a6ae21fc)
 
-###Training
+### Training
 
 If you have some data contained in a file `data.csv` and you want to get started quickly, you can train a model using the `train.py` file with its default settings. Just run 
 ```bash
@@ -32,7 +32,7 @@ $ python train.py -h
 
 In each training step the trainer will perform an rmsprop update using a mini-batch of poems (the default size of which is 100 and it can be adjusted). Periodically, the trainer will tell you how long (on average) the batches are taking. After each epoch, the model will tell you the current loss, the training accuracy, and the validation accuracy. It will also write the current model (serialized using pickle) to a file in the `cv` folder if it has a higher validation accuracy than the previous best model. These models will be used to sample after training.
 
-###Sampling  
+### Sampling  
 
 Once you have a model trained you can use `sample.py` to sample from it. If you have a model stored in `cv/model.p` then you can sample from it using the default parameters with the command
 ```bash
