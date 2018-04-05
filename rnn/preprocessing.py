@@ -19,7 +19,7 @@ def generate_dictionary(location):
     return char_to_nums
 #generate the reverse dictionary
 def reverse_dictionary(dictionary):
-    rev_dict={v: k for k, v in dictionary.iteritems()}
+    rev_dict={v: k for k, v in dictionary.items()}
     return rev_dict    
 
 #convert poems to matrices using 1-k encoding

@@ -5,7 +5,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{1c85cac6-15bc-44e5-8b45-9b66449b7204}</ProjectGuid>
     <ProjectHome />
-    <StartupFile>train.py </StartupFile>
+    <StartupFile>train.py</StartupFile>
     <SearchPath />
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
@@ -50,9 +50,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="cv\.DS_Store" />
+    <Content Include="cv\haikus.p" />
+    <Content Include="cv\haikus2.p" />
     <Content Include="data\haikus.csv" />
     <Content Include="data\limericks.csv" />
     <Content Include="data\Readme.md" />
+    <Content Include="poems\poems.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
 </Project>
