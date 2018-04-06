@@ -12,9 +12,8 @@ def generate_dictionary(location):
         char_to_nums={}
         char_to_nums['\t']=0 # we use this as a special character later
         for row in reader:
-            for letter in row[0]:
-                if letter not in char_to_nums.keys():
-                    char_to_nums[letter]=len(char_to_nums)
+            for word in row[0].split():
+                char_to_nums[word]=len(char_to_nums)
         my_file.close()
     return char_to_nums
 #generate the reverse dictionary
@@ -24,10 +23,11 @@ def reverse_dictionary(dictionary):
 
 #convert poems to matrices using 1-k encoding
 def poem_to_mat(poem,dictionary):
-    poem_length=len(poem)
+    words=poem.split()
+    poem_length=len(words)
     vocab_length=len(dictionary)
     poem_mat=np.zeros((poem_length,vocab_length))
-    vocab_list=[dictionary[s] for s in poem]
+    vocab_list=[dictionary[s] for s in words]
     poem_mat[range(poem_length),vocab_list]=1
     return poem_mat
     

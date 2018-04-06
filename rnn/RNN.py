@@ -270,11 +270,15 @@ def LSTM_sample(model,temp=1.0,seed=None,max_length=1000,num_layers=2):
     if seed is None: #initialize first character to random letter it not specified
         seed = ''
         while not seed.isalpha():
-            seed = np.random.choice(letters,p=letter_distribution)
-    s+=seed
-    current_character = seed[-1]
+            #seed = np.random.choice(letters,p=letter_distribution)
+            seed = np.random.choice(list(dictionary.keys()))
+
+    s+=seed + " "
+    #current_character = seed[-1]
+    current_character = seed
     x = np.zeros((1,1,v))
-    x[:,:,dictionary[seed[0]]] = 1
+    #x[:,:,dictionary[seed[0]]] = 1
+    x[:,:,dictionary[seed]] = 1
     i = len(seed)
     h1 = np.zeros((1,int(d1)))
     h2 = np.zeros((1,int(d2)))
@@ -291,7 +295,8 @@ def LSTM_sample(model,temp=1.0,seed=None,max_length=1000,num_layers=2):
             h1 = cache1['Houtstack'][0,:,1:]
             h2 = cache2['Houtstack'][0,:,1:]
             x = np.zeros((1,1,v))
-            x[:,:,dictionary[seed[j]]] = 1
+            #x[:,:,dictionary[seed[j]]] = 1
+            x[:,:,dictionary[seed]] = 1
         #sample using the model
         while current_character != '\t' and i < max_length:
             layer1_scores,cache1 = LSTM.batch_forward(x,model1,output_layer=False,h0=h1,c0=c1)
@@ -306,7 +311,7 @@ def LSTM_sample(model,temp=1.0,seed=None,max_length=1000,num_layers=2):
             #print v,probs.shape
             smpl = np.random.choice(v,p=probs[0,0,:])
             current_character = rev_dict[smpl]
-            s+=current_character
+            s+=current_character + " "
             x = np.zeros((1,1,v))
             x[:,:,smpl] = 1
             i+=1
@@ -330,25 +335,8 @@ def LSTM_sample(model,temp=1.0,seed=None,max_length=1000,num_layers=2):
             #print v,probs.shape
             smpl = np.random.choice(v,p=probs[0,0,:])
             current_character = rev_dict[smpl]
-            s+=current_character
+            s+=current_character+" "
             x = np.zeros((1,1,v))
             x[:,:,smpl] = 1
             i+=1
         return s
-            
-
-            
-
-        
-        
-    
-        
-    
-        
-        
-        
-        
-    
-    
-    
-    
