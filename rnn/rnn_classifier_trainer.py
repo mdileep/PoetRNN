@@ -75,7 +75,7 @@ class RNNClassifierTrainer(object):
     #batch the validation data and labels into tensors and create the mask
     X_val,val_mask,val_chars,y_val = poem_batch_to_tensor(X_val_list,y_val_list)
     if sample_batches:
-      iterations_per_epoch = N / batch_size # using SGD
+      iterations_per_epoch = int(N / batch_size) # using SGD
     else:
       iterations_per_epoch = 1 # using GD
     num_iters = num_epochs * iterations_per_epoch

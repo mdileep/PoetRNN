@@ -3,17 +3,19 @@ import csv
 import os
 
 #some lists that are useful later
-letter_distribution=np.array([.08167,.01492,.02782,.04253,.12702,.02228,.02015,.06094,.06966,.00153,.00772,.04025,.02406,.06749,.07507,.01929,.00095,.05987,.06327,.09056,.02758,.00978,.02361,.00150,.01974,.00074])
-letters=np.array(['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'])
+#letter_distribution=np.array([.08167,.01492,.02782,.04253,.12702,.02228,.02015,.06094,.06966,.00153,.00772,.04025,.02406,.06749,.07507,.01929,.00095,.05987,.06327,.09056,.02758,.00978,.02361,.00150,.01974,.00074])
+#letters=np.array(['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'])
 #generate letter to number dictionary
 def generate_dictionary(location):
-    with open(os.path.abspath(location),'rt') as my_file:
+    with open(os.path.abspath(location),'rt', encoding="utf-8") as my_file:
         reader=csv.reader(my_file)
         char_to_nums={}
         char_to_nums['\t']=0 # we use this as a special character later
         for row in reader:
+        #for row in my_file:
             for word in row[0].split():
-                char_to_nums[word]=len(char_to_nums)
+                if word not in char_to_nums.keys():
+                    char_to_nums[word]=len(char_to_nums)
         my_file.close()
     return char_to_nums
 #generate the reverse dictionary

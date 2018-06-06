@@ -29,14 +29,9 @@ def main(params):
             print( poem+'\n')
     if params['output']>0:
         filename=os.path.join('poems',params['output_filename']+'.txt')
-        with open(filename,'wt') as my_file:
+        with open(filename,'wt', encoding="utf-8") as my_file:
             for poem in poem_list:
                 my_file.write(poem+'\n')
-    
-    
-    
-    
-
 
 #get arguments from command line
 
@@ -46,7 +41,7 @@ if __name__ == "__main__":
     parser.add_argument('-m','--model', dest='model', help='filename of model in cv folder to sample from', required=True)
     parser.add_argument('-t','--temp', dest='temp', type=float, default='1.0', help='temperature for sampling, default is 1')
     parser.add_argument('-s','--seed', dest='seed', type=str, default=None, help='a string to seed the model with when sampling')
-    parser.add_argument('-n','--num_poems', dest='num_poems', type=int, default='10', help='number of poems to produce')
+    parser.add_argument('-n','--num_poems', dest='num_poems', type=int, default='50', help='number of poems to produce')
     parser.add_argument('-o','--output', dest='output', type=int, default=1, help='0:print result, 1:write to file, 2:print and write to file') 
     parser.add_argument('-f','--output_filename', dest='output_filename', default='poems', help='filename to output poems to')
     

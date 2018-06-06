@@ -17,10 +17,19 @@ def main(params):
     #load poems
     poems=[]
     labels=[]
-    with open(data_filename,'rt') as my_file:
+    with open(data_filename,'rt', encoding="utf-8") as my_file:
         reader=csv.reader(my_file)
         for row in reader:
+            #try:
             poems.append(prep.poem_to_mat(row[0],poem_dict))
+            #except:
+            #     print(row)
+        #for row in my_file:
+            #try:
+                #poems.append(prep.poem_to_mat(row[0],poem_dict))
+            #except:
+                 #print(row)
+
     #generate the labels
     for poem in poems:
         labels.append(prep.generate_labels(poem,poem_dict))
